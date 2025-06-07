@@ -1,20 +1,11 @@
-# Copyright (c) 2025, Salah Uddin and contributors
-# For license information, please see license.txt
-
-# import frappe
-
-
-# def execute(filters=None):
-# 	columns, data = [], []
-# 	return columns, data
-
-
-
+# Developer: Salah Uddin (Software Engineer, Frappe Developer)
+# Description: Custom report for Service Booking DocType in ERPNext
 
 import frappe
 from frappe import _
 
 def execute(filters=None):
+    # Define report columns with labels, fieldnames, types, and widths
     columns = [
         {"label": _("Customer Name"), "fieldname": "customer_name", "fieldtype": "Data", "width": 180},
         {"label": _("Service Type"), "fieldname": "service_type", "fieldtype": "Data", "width": 120},
@@ -22,16 +13,19 @@ def execute(filters=None):
         {"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 100},
     ]
 
+    # Build SQL WHERE conditions based on filters provided
     conditions = []
     if filters.get("service_type"):
         conditions.append("service_type = %(service_type)s")
     if filters.get("status"):
         conditions.append("status = %(status)s")
 
+    # Combine conditions into a WHERE clause if any filter is set
     where_clause = " AND ".join(conditions)
     if where_clause:
         where_clause = "WHERE " + where_clause
 
+    # Execute parameterized SQL query to fetch filtered booking records
     data = frappe.db.sql(f"""
         SELECT
             customer_name,

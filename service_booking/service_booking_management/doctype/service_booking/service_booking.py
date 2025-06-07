@@ -1,5 +1,5 @@
-# Copyright (c) 2025, Salah Uddin and contributors
-# For license information, please see license.txt
+# Developer: Salah Uddin (Software Engineer, Frappe Developer)
+# Description: Custom ServiceBooking DocType event handlers for ERPNext
 
 import frappe
 import requests
@@ -8,7 +8,9 @@ from frappe.model.document import Document
 
 class ServiceBooking(Document):
 	def on_update(self):
+		# Fetch customer's custom email from Customer doctype using the customer_name linked in the booking
 		customer_email = frappe.db.get_value("Customer", self.customer_name, "custom_customer_email")
+		# Send approval email if booking status is "Approved" and customer email exists
 		if self.status == "Approved" and customer_email:
 			frappe.sendmail(
 				recipients=[customer_email],
